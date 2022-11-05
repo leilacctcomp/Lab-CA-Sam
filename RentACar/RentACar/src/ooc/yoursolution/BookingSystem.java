@@ -16,6 +16,7 @@ import ooc.enums.Make;
  */
 public class BookingSystem implements BookingSystemInterface {
 
+    //Implementation of the abstract methods
     @Override
     public RentACarInterface setupRentACar(BufferedReader in) throws IOException {
         RentACarInterface rent = null;
@@ -33,8 +34,10 @@ public class BookingSystem implements BookingSystemInterface {
                double rate = Double.parseDouble(ln[1]);
                int available = Integer.parseInt(ln[2]);
                
+               //Looping through the Array of cars
                for (int i=0; i<available; i++){
                    Car car = new Car(make, rate, id);
+                   
                    cars.add(car);
                    id++;
                }

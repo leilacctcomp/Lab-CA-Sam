@@ -18,7 +18,7 @@ public class Car implements CarInterface {
     //These properties is to accomplish the requirement "Cars have a make, a daily rate, an id and a calendar of availability"
     private Make make;
     private double rate;
-    private int id;
+    final int id;
     private Map<Month, boolean[]> availability;
 
     //Constructor with three paramenters
@@ -26,6 +26,7 @@ public class Car implements CarInterface {
         this.make = make;
         this.rate = rate;
         this.id = id;
+        this.availability = createAvailability();
     }
 
     //implementation of all abstract methods
