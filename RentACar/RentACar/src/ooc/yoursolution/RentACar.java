@@ -49,27 +49,18 @@ public class RentACar implements RentACarInterface {
 
     }
 
+    //Using the same function to check if the car is available
     @Override
     public boolean checkAvailability(Month month, int day, Make make, int lengthOfRent) {
-        boolean check = false;
-        for (CarInterface availability : Cars) {
-            if (availability.getMake() == make) {
-                for (int i = 0; i < lengthOfRent; i++) {
-                    if (availability.getAvailability().get(month)[day + i - 1]) {
-                        check = false;
-                        break;
-                    } else {
-                        check = true;
-                    }
-                }
-            }
-        }
-        return check;
+        int availableId = getCarAvailable(month, day, make, lengthOfRent);
+
+        return (availableId != -1);
+
     }
 
     @Override
     public int getCarAvailable(Month month, int day, Make make, int lengthOfRent) {
-        int check = 0;
+        int check = -1;
         for (CarInterface availability : Cars) {
             if (availability.getMake() == make) {
                 for (int i = 0; i < lengthOfRent; i++) {
@@ -81,7 +72,8 @@ public class RentACar implements RentACarInterface {
                         check = availability.getId();
                     }
                 }
-                if (check != 0) {
+
+                if (check != -1) {
                     break;
                 }
             }
@@ -91,26 +83,29 @@ public class RentACar implements RentACarInterface {
 
     @Override
     public boolean bookCar(Month month, int day, Make make, int lengthOfRent) {
-        boolean check = false;
-        for (CarInterface availability : Cars) {
-            if (availability.getMake() == make) {
-                for (int i = 0; i < lengthOfRent; i++) {
-                    if (!availability.getAvailability().get(month)[day + i - 1]) {
-                        Map<Month, boolean[]> available = availability.getAvailability();
-                        boolean[] days = availability.getAvailability().get(month);
-                        days[day + i + 1] = true;
-                        available.replace(month, days);
-                        availability.setAvailability(available);
-                        check = true;
-                    } else {
-                        check = false;
-                    }
-                }
-            } else {
+        int availableId = getCarAvailable(month, day, make, lengthOfRent);
+
+        //This is gonna return -1 if the car is not available
+        if (availableId == -1) {
+            return false;
+        }
+
+        CarInterface car = null;
+        for (CarInterface candidate : Cars) {
+            if (candidate.getId() == availableId) {
+                car = candidate;
                 break;
             }
         }
-        return check;
+
+        //Is gonna loop through the days to get the availability
+        boolean[] days = car.getAvailability().get(month);
+        for (int i = 0; i < lengthOfRent; i++) {
+            days[day + i - 1] = true;
+        }
+
+        return true;
+
     }
 
     @Override
